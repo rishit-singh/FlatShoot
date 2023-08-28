@@ -1,3 +1,5 @@
+using System;
+using System.ComponentModel;
 using UnityEditor.Build.Content;
 using UnityEngine;
 
@@ -7,6 +9,15 @@ public class PlayerControl : MonoBehaviour
 
     public Transform Transform;
 
+    protected static string[] Keys = new string[] { 
+        "w", "a", "s", "d", "space" 
+    };
+
+    /// <summary>
+    /// Clamps the position of the current RigidBody if it goes above/below a certain X value
+    /// </summary>
+    /// <param name="min">Minimum X value.</param>
+    /// <param name="max">Maximum X value.</param>
     protected void ClampX(float min, float max)
     {
         if (this.RigidBody.position.x < min)
@@ -15,6 +26,11 @@ public class PlayerControl : MonoBehaviour
             this.RigidBody.position = new Vector2(max, this.RigidBody.position.y);
     }
 
+    /// <summary>
+    /// Clamps the position of the current RigidBody if it goes above/below a certain Y value
+    /// </summary>
+    /// <param name="min">Minimum Y value.</param>
+    /// <param name="max">Maximum Y value.</param>
     protected void ClampY(float min, float max)
     {
         if (this.RigidBody.position.y < min)
@@ -30,17 +46,9 @@ public class PlayerControl : MonoBehaviour
 
     public void Update()
     {
-        if (Input.GetKey("space"))
-            this.RigidBody.AddForce(new Vector2(0.0f, 5.0f));
-        
-        if (Input.GetKey("a"))
-            this.RigidBody.AddForce(new Vector2(-3.0f, 0.0f));
-        
-        if (Input.GetKey("d"))
-            this.RigidBody.AddForce(new Vector2(3.0f, 0.0f));
-        
-        if (Input.GetKey("s"))
-            this.RigidBody.AddForce(new Vector2(0.0f, -3.0f));
+        for (int x = 0; x < GameState.Instance.MovementForces.Length; x++)
+            if (Input.GetKey(Keys[x]))
+                this.RigidBody.AddForce(GameState.Instance.MovementForces[x]);
 
         this.ClampX(GameState.Instance.BoundsMin.x, GameState.Instance.BoundsMax.x);
         this.ClampY(GameState.Instance.BoundsMin.y, GameState.Instance.BoundsMax.y);

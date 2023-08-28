@@ -9,6 +9,8 @@ public class GameState : MonoBehaviour
     public Vector2 BoundsMin;
     public Vector2 BoundsMax;
 
+    public Vector2[] MovementForces;
+
     public void Awake()
     {
         GameState.Instance = this;
