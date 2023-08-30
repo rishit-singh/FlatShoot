@@ -9,6 +9,10 @@ public class PlayerControl : MonoBehaviour
 
     public Transform Transform;
 
+    public Animator Animator;
+
+    public SpriteRenderer Renderer;
+
     protected static string[] Keys = new string[] { 
         "w", "a", "s", "d", "space" 
     };
