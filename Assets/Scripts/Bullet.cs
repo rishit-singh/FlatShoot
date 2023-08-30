@@ -14,9 +14,10 @@ public class Bullet : MonoBehaviour
         RB = GetComponent<Rigidbody2D>();
     }
 
-    public void Fire(float BulletDamage, float speed, Vector3 direction) {
-        this.BulletDamage = BulletDamage;
+    public void Fire(float bulletDamage, float speed, Vector3 direction) {
+        this.BulletDamage = bulletDamage;
         RB.velocity = speed * direction;
+      
         Destroy(gameObject, MaxTime); // TODO: pooling system 
     }
 

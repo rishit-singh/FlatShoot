@@ -1,7 +1,12 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading;
+using UnityEditor;
 using UnityEditor.Build.Content;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerControl : MonoBehaviour
 {
@@ -12,6 +17,12 @@ public class PlayerControl : MonoBehaviour
     public Animator Animator;
 
     public SpriteRenderer Renderer;
+
+    public GameObject Square;
+
+    public ObjectPool SquarePool;
+
+    public Stack<GameObject> Allocated;
 
     protected static string[] Keys = new string[] { 
         "w", "a", "s", "d", "space" 
@@ -46,6 +57,10 @@ public class PlayerControl : MonoBehaviour
 
     public void Start()
     {
+        this.SquarePool = new ObjectPool(this.Square, 64, new Vector3(0, 0, 0));
+        this.Allocated = new Stack<GameObject>();
+
+        Debug.Log("Pool created.");
     }
 
     public void Update()
@@ -54,18 +69,32 @@ public class PlayerControl : MonoBehaviour
             if (Input.GetKey(Keys[x]))
                 this.RigidBody.AddForce(GameState.Instance.MovementForces[x]);
 
+        if (Input.GetMouseButtonDown(0))
+        {
+            GameObject obj = this.SquarePool.GetObject();
+
+            if (obj != null)
+            {
+                Rigidbody2D rigidBody;
+
+                if ((rigidBody = obj.GetComponent<Rigidbody2D>()) != null)
+                   rigidBody.gravityScale = 1;
+
+                this.Allocated.Push(obj);
+            }
+        } 
+
+        if (Input.GetMouseButtonDown(1) && this.Allocated.Count > 0)
+            this.SquarePool.Dispose(this.Allocated.Pop());
+
         this.ClampX(GameState.Instance.BoundsMin.x, GameState.Instance.BoundsMax.x);
         this.ClampY(GameState.Instance.BoundsMin.y, GameState.Instance.BoundsMax.y);
     }
 
-    public void OnCollisionEnter2D()
+    public void OnCollisionEnter2D(Collision2D collision)
     {
         Debug.Log("Collision called.");
-
-
-        // if (collision.gameObject.name == "Platform")
-        // {
-        //     Debug.Log("Collided.");
-        // }
     }
 }
+
+ 
