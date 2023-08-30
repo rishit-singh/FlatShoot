@@ -5,27 +5,24 @@ using UnityEngine;
 public class TestDummy : MonoBehaviour, IDamageable
 {
     [SerializeField]
-    private float maxHealth = 50;
+    private float MaxHealth = 50;
 
-    private float currentHealth;
+    private float CurrentHealth;
 
     public void Damage(float amount)
     {
-        currentHealth -= amount;
+        CurrentHealth -= amount;
 
-        if (currentHealth <= 0) {
+        if (CurrentHealth <= 0)
             Die();
-        }
     }
 
     void Start()
     {
-        currentHealth = maxHealth;
+        CurrentHealth = MaxHealth;
     }
 
     private void Die() {
         Destroy(gameObject);
     }
-
-    
 }

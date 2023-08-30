@@ -6,23 +6,28 @@ public class PlayerShooting : MonoBehaviour
 {
     // Get this info from gun type?
     [SerializeField]
-    private float bulletSpeed = 20f;
-    [SerializeField]
-    private float bulletDamage = 10f;
-    [SerializeField]
-    private float shootingTime = 0.1f;
-    [SerializeField]
-    private int maxBullets = 10;
+    private float BulletSpeed = 20f;
 
     [SerializeField]
-    private GameObject bullet;
+    private float BulletDamage = 10f;
+
+    [SerializeField]
+    private float ShootingTime = 0.1f;
+
+    [SerializeField]
+    private int MaxBullets = 10;
+
+    [SerializeField]
+    private GameObject BulletInstance;
+
     [SerializeField]
     private Transform shootingPos;
 
-    private int currentBullets;
-    private float lastShootingTime;
+    private int CurrentBullets;
+    private float LastShootingTime;
 
-    void Start() {
+    void Start() 
+    {
         Reload();
     }
 
@@ -40,27 +45,28 @@ public class PlayerShooting : MonoBehaviour
         }
     }
 
-    private void Shoot() {
-        if (currentBullets > 0 && Time.time >=  lastShootingTime + shootingTime) {
-            currentBullets--;
-            lastShootingTime = Time.time;
+    private void Shoot() 
+    {
+        if (CurrentBullets > 0 && Time.time >= (LastShootingTime + ShootingTime)) {
+            CurrentBullets--;
+            LastShootingTime = Time.time;
 
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mousePosition.z = 0;
+            
             Vector3 direction = (mousePosition - shootingPos.position).normalized;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
             // TODO: will change to a pooling system later so im not instantiating+destroying so many objects >.>
-            Bullet curBullet = Instantiate(bullet, shootingPos.position, Quaternion.Euler(0f, 0f, angle)).GetComponent<Bullet>();
-            curBullet.Fire(bulletDamage, bulletSpeed, direction);
-
-        } else if (currentBullets == 0) {
-            // TODO
-            Debug.Log("Press R to reload.");
-        }
+            Bullet curBullet = Instantiate(BulletInstance, shootingPos.position, Quaternion.Euler(0f, 0f, angle)).GetComponent<Bullet>();
+            curBullet.Fire(BulletDamage, BulletSpeed, direction);
+        } else if (CurrentBullets == 0) 
+            Debug.Log("Press R to reload."); // TODO
     }
 
-    private void Reload() {
-        currentBullets = maxBullets;
+    private void Reload() 
+    {
+        CurrentBullets = MaxBullets;
     }
 }
+ 
