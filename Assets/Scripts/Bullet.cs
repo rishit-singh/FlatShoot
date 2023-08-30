@@ -26,6 +26,8 @@ public class Bullet : MonoBehaviour
         if (damageable != null) {
             damageable.Damage(bulletDamage);
             Destroy(gameObject); // TODO: pooling system 
+        } else if (other.gameObject.layer == LayerMask.NameToLayer("Ground")) {
+            Destroy(gameObject); // TODO: pooling system 
         }
     }
 }

@@ -800,7 +800,7 @@ GameObject:
   - component: {fileID: 1916778313}
   - component: {fileID: 1916778312}
   - component: {fileID: 1916778311}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Platform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
