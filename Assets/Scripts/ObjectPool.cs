@@ -96,7 +96,7 @@ public class ObjectPool
 	{
 		DisposableGameObject[] gameObjects = new DisposableGameObject[this.Allocated.Count];
 
-		this.Allocated.Values.CopyTo(gameObjects, 0);
+		this.Allocated.Values.CopyTo(gameObjects, 0); // need to find a better way to do this
 
 		foreach (DisposableGameObject gameObject in gameObjects)
 			if(gameObject.ShouldDispose)
