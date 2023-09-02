@@ -155,7 +155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71b33c53cb67a194d96f160f814fc8f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 50
+  MaxHealth: 50
 --- !u!61 &200248353
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -277,7 +277,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &200248356
@@ -534,6 +534,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RigidBody: {fileID: 720910060}
   Transform: {fileID: 720910062}
+  Animator: {fileID: 0}
+  Renderer: {fileID: 0}
+  Square: {fileID: 2910699389532017700, guid: 57a6ba78017ee46f688e7d4875aac5f9, type: 3}
 --- !u!61 &720910059
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -647,7 +650,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: d75117e3ba2514d399ebd2882e6dc8f5, type: 3}
+  m_Sprite: {fileID: 1063257614, guid: 26c7864b14669f44695e4aa2570fedb8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -686,11 +689,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06527aa95d8b1a54ca53a165f55187a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletSpeed: 50
-  bulletDamage: 10
-  shootingTime: 0.1
-  maxBullets: 10
-  bullet: {fileID: 5216374053962722256, guid: 637dbbb4a1fe0f747bcd54bf9d038a74, type: 3}
+  BulletSpeed: 20
+  BulletDamage: 10
+  ShootingTime: 0.1
+  MaxBullets: 10
+  BulletInstance: {fileID: 5216374053962722256, guid: 637dbbb4a1fe0f747bcd54bf9d038a74, type: 3}
   shootingPos: {fileID: 632292165}
 --- !u!1 &1107731432
 GameObject:

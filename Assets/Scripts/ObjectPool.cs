@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Video;
 
 public struct DisposableGameObject
 {
@@ -14,8 +16,13 @@ public struct DisposableGameObject
 
 	public GameObject Obj { get; private set;}
 
-	public bool ShouldDispose { get { return ((Time.time + this.DisposeTime) >= this.CreationTime); } private set {}  }
+	public bool ShouldDispose 
+	{ 
+		get { return (Time.time >= (this.CreationTime + this.DisposeTime) && this.DisposeTime >= 0); } 
 
+		private set {}
+	}
+ 
 	public DisposableGameObject(GameObject obj, float creationTime, float disposeTime)
 	{
 		this.Obj = obj;
@@ -24,6 +31,10 @@ public struct DisposableGameObject
 	}
 }
 
+
+/// <summary>
+/// Manages a pool of Objects
+/// </summary>
 public class ObjectPool
 {
     private Queue<GameObject> ObjectQueue;
@@ -36,7 +47,7 @@ public class ObjectPool
 	
 	public int Count { get; private set; } 
 
-	public int AutoDisposeTime { get; set; }
+	public float AutoDisposeTime { get; set; }
 
 	private void Initialize()
 	{	
@@ -58,6 +69,7 @@ public class ObjectPool
 		GameObject obj = this.ObjectQueue.Dequeue();	
 
 		obj.SetActive(true);
+	
 		this.Allocated.Add(obj.GetInstanceID(), new DisposableGameObject(obj, Time.time, this.AutoDisposeTime));
 		
 		return obj;
@@ -78,7 +90,18 @@ public class ObjectPool
 		}
 
 		return true;
-	} 
+	}
+
+	public void UpdateDisposer()
+	{
+		DisposableGameObject[] gameObjects = new DisposableGameObject[this.Allocated.Count];
+
+		this.Allocated.Values.CopyTo(gameObjects, 0);
+
+		foreach (DisposableGameObject gameObject in gameObjects)
+			if(gameObject.ShouldDispose)
+				this.Dispose(gameObject.Obj);	
+	}
 
     public ObjectPool(GameObject instance, int count, Vector3 spawnPosition, float autoDisposeTime = -1)
     {
@@ -88,8 +111,9 @@ public class ObjectPool
 		this.Instance = instance;
 		this.Count = count;
 		this.SpawnPosition = spawnPosition;
-	
+		this.AutoDisposeTime = autoDisposeTime;
+
 		this.Initialize();
-    }
+	}
 }
 
