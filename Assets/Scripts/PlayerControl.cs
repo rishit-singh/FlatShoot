@@ -20,9 +20,6 @@ public class PlayerControl : MonoBehaviour
 
     public GameObject Square;
 
-    public ObjectPool SquarePool;
-
-
     protected static string[] Keys = new string[] { 
         "w", "a", "s", "d", "space" 
     };
@@ -67,8 +64,6 @@ public class PlayerControl : MonoBehaviour
 
         this.ClampX(GameState.Instance.BoundsMin.x, GameState.Instance.BoundsMax.x);
         this.ClampY(GameState.Instance.BoundsMin.y, GameState.Instance.BoundsMax.y);
-
-        this.SquarePool.UpdateDisposer();
     }
 
     public void OnCollisionEnter2D(Collision2D collision)

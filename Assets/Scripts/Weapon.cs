@@ -4,7 +4,7 @@ using UnityEngine;
 public interface IShootable
 {
     void Shoot();
-    void Aim(Vector2);    
+    void Aim(Vector2 location);    
 }
 
 public interface IReloadable
@@ -16,15 +16,15 @@ public class Weapon : IShootable, IReloadable
 {   
     public int Damage;
 
-    void Shoot()
+    public void Shoot()
     {
     }
 
-    void Aim(Vector2 aim)
+    public void Aim(Vector2 location)
     {
     }
 
-    void Reload()
+    public void Reload()
     {
     }
 
@@ -33,5 +33,7 @@ public class Weapon : IShootable, IReloadable
         this.Damage = damage;
     }
 }
+
+
 
 

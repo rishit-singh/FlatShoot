@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Video;
 
 public struct DisposableGameObject
 {
@@ -96,7 +95,7 @@ public class ObjectPool
 	{
 		DisposableGameObject[] gameObjects = new DisposableGameObject[this.Allocated.Count];
 
-		this.Allocated.Values.CopyTo(gameObjects, 0); // need to find a better way to do this
+		this.Allocated.Values.CopyTo(gameObjects, 0);
 
 		foreach (DisposableGameObject gameObject in gameObjects)
 			if(gameObject.ShouldDispose)
