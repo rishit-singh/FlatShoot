@@ -17,12 +17,19 @@ public class TestDummy : MonoBehaviour, IDamageable
             Die();
     }
 
+    public void AddHealth(float amount)
+    {
+        this.CurrentHealth += amount;
+    }
+
     void Start()
     {
         CurrentHealth = MaxHealth;
     }
 
-    private void Die() {
+    private void Die() 
+    {
         Destroy(gameObject);
     }
 }
+
