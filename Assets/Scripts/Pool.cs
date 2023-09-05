@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Unity.IO.LowLevel.Unsafe;
 using Unity.Mathematics;
 using Unity.VisualScripting;
+using UnityEditor.Il2Cpp;
 using UnityEditor.SearchService;
 using UnityEngine;
 
@@ -18,7 +19,7 @@ public class DisposableGameObject
 
 	public float DisposeTime { get; set; } 
 
-	public GameObject Obj { get; private set;}
+	public GameObject Obj { get; protected set;}
 
 	public bool IsNull 
 	{ 
@@ -44,7 +45,7 @@ public class DisposableGameObject
 
 	public virtual void Initialize()
 	{
-		this.Obj.SetActive(false);
+		this.Obj.SetActive(true);
 	}
 
 	public virtual void Reset()
@@ -57,7 +58,11 @@ public class DisposableGameObject
 		this.Obj = obj;
 		this.CreationTime = creationTime;
 		this.DisposeTime = disposeTime;
-		this.ID = this.Obj.GetInstanceID();
+	
+		if (this.Obj == null)
+			this.ID = -1;
+		else
+			this.ID = this.Obj.GetInstanceID();
 	}
 }
 
@@ -87,8 +92,6 @@ public class Pool
 			obj.SetActive(false);
 
 			DisposableGameObject disposableObj = new DisposableGameObject(obj, Time.time, this.AutoDisposeTime); 
-
-			disposableObj.Initialize();
 	
 			this.ObjectQueue.Enqueue(disposableObj);		
 		}
@@ -100,6 +103,8 @@ public class Pool
 			return new DisposableGameObject(null , -1, -1);
 	
 		DisposableGameObject obj = this.ObjectQueue.Dequeue();
+
+		obj.Initialize();
 
 		this.Allocated.Add(obj.ID, obj);
 
@@ -153,10 +158,10 @@ public class Pool
 		this.Allocated.Values.CopyTo(gameObjects, 0);
 
 		foreach (DisposableGameObject gameObject in gameObjects)
-			Destroy(gameObject.Obj);
+			UnityEngine.Object.Destroy(gameObject.Obj);
 
 		for (GameObject obj = this.ObjectQueue.Dequeue().Obj; this.ObjectQueue.Count > 0; obj = this.ObjectQueue.Dequeue().Obj)
-			Destroy(obj);
+			UnityEngine.Object.Destroy(obj);
 	}
 }
 

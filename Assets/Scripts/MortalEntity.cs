@@ -1,7 +1,9 @@
 
 using System;
+using UnityEngine;
 
-public abstract class MortalEntity : PoolObject, IDamageable
+
+public abstract class MortalEntity : DisposableGameObject, IDamageable
 { 
     public float Health { get; private set; }
 
@@ -20,7 +22,7 @@ public abstract class MortalEntity : PoolObject, IDamageable
         this.Health += amount;
     }
 
-    public MortalEntity(DisposableGameObject obj, float health) : base(obj)
+    public MortalEntity(GameObject instance, float health, float autoDisposeTime = -1) : base(instance, Time.time, autoDisposeTime)
     {
         this.Health = health;
     }    
