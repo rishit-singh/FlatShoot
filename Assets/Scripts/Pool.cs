@@ -1,16 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Unity.IO.LowLevel.Unsafe;
-using Unity.Mathematics;
-using Unity.VisualScripting;
-using UnityEditor.Il2Cpp;
-using UnityEditor.SearchService;
 using UnityEngine;
 
+
+/// <summary>
+/// Maintains a disposable state based on creation and dispose time.
+/// </summary>
 public class DisposableGameObject
 {
 	public int ID { get; private set; }
@@ -21,6 +16,8 @@ public class DisposableGameObject
 
 	public GameObject Obj { get; protected set;}
 
+	private Vector2 _Position;
+
 	public bool IsNull 
 	{ 
 		get 
@@ -30,7 +27,8 @@ public class DisposableGameObject
 					this.DisposeTime < 0); 
 		} 
 		private set {} 
-		}
+	}
+
 
 	public bool ShouldDispose 
 	{ 
@@ -40,19 +38,41 @@ public class DisposableGameObject
 					this.DisposeTime >= 0); 
 		} 
 
-		private set {}
+		private set{}
 	}
 
+	public Vector2 Position 
+	{  
+		get => _Position; 
+		set 
+		{ 
+			this._Position = value;
+			this.Obj.GetComponent<Transform>().position = this._Position; 
+		} 
+	}
+
+	/// <summary>
+	/// Called on initialization.
+	/// </summary>
 	public virtual void Initialize()
 	{
 		this.Obj.SetActive(true);
 	}
 
+	/// <summary>
+	/// Called on Reset
+	/// </summary>
 	public virtual void Reset()
 	{
 		this.Obj.SetActive(false);
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="obj"></param>
+	/// <param name="creationTime"></param>
+	/// <param name="disposeTime"></param>
 	public DisposableGameObject(GameObject obj, float creationTime, float disposeTime)
 	{
 		this.Obj = obj;
@@ -82,7 +102,10 @@ public class Pool
 	public int Count { get; private set; } 
 
 	public float AutoDisposeTime { get; set; }
-
+	
+	/// <summary>
+	/// Allocates all the objects. 
+	/// </summary>
 	private void Initialize()
 	{	
 		for (int x = 0;  x < this.Count; x++)
@@ -97,6 +120,10 @@ public class Pool
 		}
 	}
 
+	/// <summary>
+	/// Fetches an object from the pool queue
+	/// </summary>
+	/// <returns>Fetched object.</returns>
 	public DisposableGameObject GetObject()
 	{ 
 		if (this.ObjectQueue.Count < 1)
@@ -109,8 +136,29 @@ public class Pool
 		this.Allocated.Add(obj.ID, obj);
 
 		return obj;
+	} 
+
+	/// <summary>
+	/// Fetches an object from the pool and sets its position to the given Vector2
+	/// </summary>
+	/// <param name="spawnPosition">Position to set.</param>
+	/// <returns>Fetched object.</returns>
+	public DisposableGameObject GetObject(Vector2 spawnPosition)
+	{
+		if (this.ObjectQueue.Count < 1)
+			return new DisposableGameObject(null , -1, -1);
+	
+		DisposableGameObject obj = this.ObjectQueue.Dequeue();
+
+		obj.Position = spawnPosition;
+		
+		obj.Initialize();
+
+		this.Allocated.Add(obj.ID, obj);
+
+		return obj;
 	}
- 
+	
 	public bool Dispose(DisposableGameObject obj)
 	{
 		try
@@ -127,6 +175,9 @@ public class Pool
 		return true;
 	}
 
+	/// <summary>
+	/// Disposes all the objects that have a disposable state.
+	/// </summary>
 	public void UpdateDisposer()
 	{
 		DisposableGameObject[] gameObjects = new DisposableGameObject[this.Allocated.Count];
@@ -138,6 +189,13 @@ public class Pool
 				this.Dispose(gameObject);	
 	}
 
+	/// <summary>
+	/// Constructor
+	/// </summary>
+	/// <param name="instance">GameObject instance.</param>
+	/// <param name="count">Number of objects to allocate.</param>
+	/// <param name="spawnPosition">Default spawn position</param>
+	/// <param name="autoDisposeTime">Auto dispose time.</param>
     public Pool(GameObject instance, int count, Vector3 spawnPosition, float autoDisposeTime = -1)
     {
 		this.ObjectQueue = new Queue<DisposableGameObject>();
@@ -150,7 +208,7 @@ public class Pool
 
 		this.Initialize();
 	}
-
+	
 	~Pool()
 	{
 		DisposableGameObject[] gameObjects = new DisposableGameObject[this.Allocated.Count];

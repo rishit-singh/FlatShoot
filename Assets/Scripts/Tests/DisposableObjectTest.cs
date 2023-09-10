@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -15,28 +13,37 @@ public class DisposableGameObjectTest : MonoBehaviour
 
     public void Start()
     {
-        this.ObjectPool = new Pool(this.Instance, 10, new Vector2(0, 0), 5);
+        DisposableSquare square = new DisposableSquare(this.Instance, Time.time, 5.0f);
+        
+        square.Obj.GetComponent<SpriteRenderer>().color = Color.green;
+
+        this.ObjectPool = new Pool(square.Obj, 10, new Vector2(0, 0), 5);
     }
 
     public void Update()
     {
-        DisposableGameObject gameObject = this.ObjectPool.GetObject();
+        DisposableGameObject gameObject = this.ObjectPool.GetObject(new Vector2(-5, -5));
 
-        for (; !gameObject.IsNull; gameObject = this.ObjectPool.GetObject());
+        for (; !gameObject.IsNull; gameObject = this.ObjectPool.GetObject(new Vector2(-10, -10)));
 
-        this.ObjectPool.UpdateDisposer();
+        this.ObjectPool.UpdateDisposer(); // has to be called per frame to ensure autodispsol
     }
 }
 
-public class DisposableSquare : DisposableGameObject    
+public class DisposableSquare : DisposableGameObject 
 {
     private SpriteRenderer Sprite;
 
+    /// <summary>
+    /// Called by the pool on disposal.
+    /// </summary>
     public override void Reset()
     {
-        this.Sprite.color = Color.cyan;
     }
 
+    /// <summary>
+    /// Called by the pool before after instanciating.
+    /// </summary>
     public override void Initialize()
     {
         base.Initialize();

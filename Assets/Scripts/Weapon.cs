@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 public interface IShootable
@@ -9,12 +8,14 @@ public interface IShootable
 
 public interface IReloadable
 {
-    void Reload();
+    void Reload(int amount);
 }
 
 public class Weapon : IShootable, IReloadable
 {   
     public int Damage;
+
+    public int Shots { get; private set; } 
 
     public void Shoot()
     {
@@ -24,7 +25,7 @@ public class Weapon : IShootable, IReloadable
     {
     }
 
-    public void Reload()
+    public void Reload(int amount)
     {
     }
 
