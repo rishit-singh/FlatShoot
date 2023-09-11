@@ -8,7 +8,7 @@ public abstract class MortalEntity : DisposableGameObject, IDamageable
     public float Health { get; private set; }
 
     public virtual void Die()
-    {
+    {   
         throw new NotImplementedException();
     }
 

@@ -11,11 +11,9 @@ public interface IReloadable
     void Reload(int amount);
 }
 
-public class Weapon : IShootable, IReloadable
+public class Weapon : IShootable
 {   
     public int Damage;
-
-    public int Shots { get; private set; } 
 
     public void Shoot()
     {
@@ -25,11 +23,7 @@ public class Weapon : IShootable, IReloadable
     {
     }
 
-    public void Reload(int amount)
-    {
-    }
-
-    public Weapon(int damage)
+    public Weapon(int damage, int ammo)
     {
         this.Damage = damage;
     }

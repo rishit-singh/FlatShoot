@@ -20,6 +20,10 @@ public class PlayerControl : MonoBehaviour
 
     public GameObject Square;
 
+    public GameObject PlayerInstance;
+
+    private Player Player;
+
     protected static string[] Keys = new string[] { 
         "w", "a", "s", "d", "space" 
     };
@@ -46,24 +50,23 @@ public class PlayerControl : MonoBehaviour
     {
         if (this.RigidBody.position.y < min)
             this.RigidBody.position = new Vector2(this.RigidBody.position.x, min);
-        else if (this.RigidBody.position.y > max)
-            this.RigidBody.position = new Vector2(this.RigidBody.position.x, max);
+        else if (this.RigidBody.position.y > max) 
+            this.RigidBody.position = new Vector2(this.RigidBody.position.x, max); 
     }
     
-
     public void Start()
     {
-        Debug.Log("Pool created.");
+        this.Player = new Player(this.PlayerInstance, 100); 
     }
 
     public void Update()
     {
         for (int x = 0; x < GameState.Instance.MovementForces.Length; x++)
             if (Input.GetKey(Keys[x]))
-                this.RigidBody.AddForce(GameState.Instance.MovementForces[x]);
+                this.Player.Move(GameState.Instance.MovementForces[x]);
 
-        this.ClampX(GameState.Instance.BoundsMin.x, GameState.Instance.BoundsMax.x);
-        this.ClampY(GameState.Instance.BoundsMin.y, GameState.Instance.BoundsMax.y);
+        this.Player.Obj.transform.position = Util.ClampVectorX(this.Player.Obj.transform.position, GameState.Instance.BoundsMin.x, GameState.Instance.BoundsMax.x);
+        this.Player.Obj.transform.position = Util.ClampVectorY(this.Player.Obj.transform.position, GameState.Instance.BoundsMin.y, GameState.Instance.BoundsMax.y);
     }
 
     public void OnCollisionEnter2D(Collision2D collision)
