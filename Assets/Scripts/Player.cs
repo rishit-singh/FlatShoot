@@ -10,7 +10,10 @@ public class Player : MortalEntity, IControllable
     public float Health;
 
     [SerializeField]
-    public GameObject Instance; 
+    public GameObject Instance;
+
+    [SerializeField]
+    public GameObject WeaponInstance;
 
     private Rigidbody2D RigidBody;
 

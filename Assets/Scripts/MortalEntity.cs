@@ -12,12 +12,12 @@ public abstract class MortalEntity : DisposableGameObject, IDamageable
         throw new NotImplementedException();
     }
 
-    public void Damage(float amount)
+    public virtual void Damage(float amount)
     {
         this.Health -= amount; 
     }
 
-    public void AddHealth(float amount)
+    public virtual void AddHealth(float amount)
     {
         this.Health += amount;
     }
